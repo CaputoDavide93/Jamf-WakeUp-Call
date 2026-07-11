@@ -2,13 +2,21 @@
 Configuration file for Jamf Pro Wake-Up Script
 """
 import os
+import sys
+
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Jamf Pro API Configuration
-JAMF_PRO_URL = os.getenv('JAMF_PRO_URL', 'https://xdesign.jamfcloud.com')
+# Jamf Pro API Configuration (required — no default)
+JAMF_PRO_URL = os.getenv('JAMF_PRO_URL', '').strip()
+if not JAMF_PRO_URL:
+    sys.exit(
+        "ERROR: JAMF_PRO_URL is not set.\n"
+        "Set it in your environment or .env file, e.g.:\n"
+        "  JAMF_PRO_URL=https://your-jamf-instance.jamfcloud.com"
+    )
 
 # Authentication methods (supports both Token and Basic Auth)
 # Only set if actually provided (not empty placeholders)

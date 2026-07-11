@@ -1,13 +1,19 @@
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
-![Platform](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)
-![Jamf Pro](https://img.shields.io/badge/Jamf%20Pro-REST%20API-green.svg)
-![Language](https://img.shields.io/badge/Language-Python%203-orange.svg)
+<div align="center">
 
-# Jamf Pro Wake-Up Call Script
+# ⏰ Jamf Pro Wake-Up Call Script
 
 **A Python utility to remotely wake up and redeploy the Jamf Management Framework on macOS computers in your Jamf Pro environment.**
 
-## Overview
+![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-macOS-lightgrey?logo=apple&logoColor=white)
+![Jamf Pro](https://img.shields.io/badge/Jamf%20Pro-REST%20API-green)
+![License](https://img.shields.io/badge/License-MIT-blue)
+
+</div>
+
+---
+
+## 📖 Overview
 
 This script provides an easy-to-use interface to send wake-up commands (MDM redeploy commands) to macOS computers managed by Jamf Pro. It supports three operational modes:
 
@@ -15,7 +21,7 @@ This script provides an easy-to-use interface to send wake-up commands (MDM rede
 2. **Single Mode** - Wake up a specific computer by serial number
 3. **File Mode** - Wake up multiple computers from a serial number list
 
-## Why Use This Script?
+### Why Use This Script?
 
 When Jamf Pro devices enter sleep state or go offline, management commands may queue indefinitely. This script:
 - Sends immediate redeploy commands to wake up the Jamf Management Framework
@@ -24,31 +30,20 @@ When Jamf Pro devices enter sleep state or go offline, management commands may q
 - Includes safety features (dry-run, confirmation prompts)
 - Provides detailed logging for troubleshooting
 
-## Features
+---
 
-✅ **Multiple Target Modes**
-- Wake up entire dynamic groups
-- Target individual computers by serial number
-- Batch operations using a serial number file
+## ✨ Features
 
-✅ **Safety Features**
-- Interactive confirmation prompts
-- Dry-run mode to preview actions
-- Detailed logging of all operations
-- Error handling with informative messages
+| | Feature | What it does |
+|---|---|---|
+| 🎯 | Multiple target modes | Entire dynamic groups, single serial, or batch from a serial-number file |
+| 🛟 | Safety features | Interactive confirmation, dry-run preview, detailed logging, informative errors |
+| 🔑 | Flexible authentication | Token-based (recommended) or username/password, with automatic token refresh |
+| 🧑‍💻 | User-friendly | Formatted console output, comments in batch files, skip-confirmation for automation |
 
-✅ **Flexible Authentication**
-- Token-based authentication (recommended)
-- Username/password authentication
-- Automatic token refresh
+---
 
-✅ **User-Friendly**
-- Clear console output with formatted results
-- Support for comments in batch files
-- Skip confirmation for automation
-- Detailed operation reports
-
-## Installation
+## 🚀 Quick Start
 
 ### 1. Clone the Repository
 
@@ -85,9 +80,11 @@ LOG_FILE=jamf_wakeup.log
 API_TIMEOUT=30
 ```
 
-> **⚠️ Important:** Never commit `.env` files with real credentials. The `.gitignore` is already configured to prevent this.
+> **⚠️ Important:** `JAMF_PRO_URL` is required — the script exits with an error if it's unset. Never commit `.env` files with real credentials; the `.gitignore` is already configured to prevent this.
 
-## Usage
+---
+
+## 📖 Usage
 
 ### Mode 1: Wake Up Entire Dynamic Group
 
@@ -120,13 +117,13 @@ python3 main.py --group-id 42
 Wake up a specific computer by serial number:
 
 ```bash
-python3 main.py H644YVR9VT
+python3 main.py C02XXXXXXXXX
 ```
 
 Dry-run preview:
 
 ```bash
-python3 main.py H644YVR9VT --dry-run
+python3 main.py C02XXXXXXXXX --dry-run
 ```
 
 ### Mode 3: Wake Up Multiple Computers from File
@@ -136,12 +133,12 @@ Create a file with serial numbers (one per line):
 ```bash
 cat > computers.txt << EOF
 # Production Servers
-H644YVR9VT
-C02C94GVLVDL
+C02XXXXXXXX1
+C02XXXXXXXX2
 
 # Development Machines
-C02C71SGLVDL
-MYGK7MXR4V
+C02XXXXXXXX3
+C02XXXXXXXX4
 EOF
 ```
 
@@ -157,7 +154,7 @@ Preview first:
 python3 main.py --file computers.txt --dry-run
 ```
 
-## File Format (for --file mode)
+### File Format (for --file mode)
 
 - One serial number per line
 - Lines starting with `#` are treated as comments
@@ -165,15 +162,15 @@ python3 main.py --file computers.txt --dry-run
 
 ```
 # Team A Computers
-H644YVR9VT
-C02C94GVLVDL
+C02XXXXXXXX1
+C02XXXXXXXX2
 
 # Team B Computers
-C02C71SGLVDL
-MYGK7MXR4V
+C02XXXXXXXX3
+C02XXXXXXXX4
 ```
 
-## Command-Line Options
+### Command-Line Options
 
 ```
 usage: main.py [-h] [--file FILE] [--group-id GROUP_ID] [--dry-run] 
@@ -182,7 +179,7 @@ usage: main.py [-h] [--file FILE] [--group-id GROUP_ID] [--dry-run]
 Send wake-up calls to computers in Jamf Pro
 
 positional arguments:
-  serial                Computer serial number (e.g., C02C94GVLVDL)
+  serial                Computer serial number (e.g., C02XXXXXXXXX)
 
 optional arguments:
   -h, --help            show help message
@@ -192,21 +189,25 @@ optional arguments:
   --skip-confirmation   Skip confirmation prompt
 ```
 
-## Output Examples
+### Output Examples
 
-### Successful Wake-Up
+<details>
+<summary><strong>Successful wake-up</strong></summary>
 
 ```
 ====================================================================================================
 WAKE-UP COMMAND SENT
 ====================================================================================================
-✓ Computer 819 (H644YVR9VT)
+✓ Computer 819 (C02XXXXXXXXX)
   Device ID: 819
   Command UUID: 7695d8a1-71b9-4594-b60a-54f43ca09f59
 ====================================================================================================
 ```
 
-### Batch Results
+</details>
+
+<details>
+<summary><strong>Batch results</strong></summary>
 
 ```
 ====================================================================================================
@@ -225,13 +226,17 @@ Failed: 1
   ✗ Computer 25: 500 Server Error
 ```
 
-## Configuration
+</details>
+
+---
+
+## ⚙️ Configuration
 
 ### Environment Variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `JAMF_PRO_URL` | Yes | Base URL of your Jamf Pro instance |
+| `JAMF_PRO_URL` | Yes | Base URL of your Jamf Pro instance (no default — the script exits if unset) |
 | `JAMF_PRO_USERNAME` | Yes* | Username for authentication |
 | `JAMF_PRO_PASSWORD` | Yes* | Password for authentication |
 | `JAMF_PRO_API_TOKEN` | Yes* | API Bearer token (alternative to username/password) |
@@ -242,7 +247,9 @@ Failed: 1
 
 *Either username/password OR API token is required.
 
-## Troubleshooting
+---
+
+## 🛠️ Troubleshooting
 
 ### 401 Unauthorized Error
 
@@ -271,7 +278,7 @@ Failed: 1
 - Check internet connectivity
 - Ensure there are no firewall rules blocking the connection
 
-## Logging
+### Logging
 
 All operations are logged to the file specified in `LOG_FILE` (default: `jamf_wakeup.log`):
 
@@ -281,9 +288,11 @@ tail -f jamf_wakeup.log
 
 Set `LOG_LEVEL=DEBUG` in `.env` for detailed troubleshooting information.
 
-## Security
+---
 
-🔒 **Best Practices:**
+## 🔒 Security
+
+**Best Practices:**
 
 1. **Never commit `.env` files** - Already prevented by `.gitignore`
 2. **Use strong passwords** - Store securely
@@ -292,32 +301,32 @@ Set `LOG_LEVEL=DEBUG` in `.env` for detailed troubleshooting information.
 5. **Use `--dry-run` first** - Always preview before execution
 6. **Implement confirmation prompts** - Default behavior includes confirmation
 
-## Project Structure
+---
 
-```
+## 📁 Repo structure
+
+```text
 Jamf_WakeUp_Call/
-├── main.py              # Main script with CLI and orchestration
-├── jamf_client.py       # Jamf Pro API client
-├── config.py            # Configuration management
-├── requirements.txt     # Python dependencies
-├── .env.example         # Configuration template
-├── .gitignore           # Git ignore rules
-├── README.md            # This file
-└── LICENSE              # MIT License
+├── main.py              # 🎛️ main script with CLI and orchestration
+├── jamf_client.py       # 🔌 Jamf Pro API client
+├── config.py            # ⚙️ configuration management
+├── requirements.txt     # 📜 Python dependencies
+├── .env.example         # 🧪 configuration template
+├── .gitignore           # 🙈 git ignore rules
+├── README.md            # 📖 this file
+└── LICENSE              # 📄 MIT License
 ```
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-For issues, questions, or suggestions, please open an issue on GitHub.
-
-## Disclaimer
-
-This script is provided as-is. Test thoroughly in a non-production environment before using in production. Always use `--dry-run` to preview changes before execution.
 
 ---
 
-**Made with ❤️ for Jamf Pro administrators**
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🤝 Support
+
+For issues, questions, or suggestions, please open an issue on GitHub.
+
+**Disclaimer:** This script is provided as-is. Test thoroughly in a non-production environment before using in production. Always use `--dry-run` to preview changes before execution.

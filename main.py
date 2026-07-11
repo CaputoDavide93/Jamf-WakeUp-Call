@@ -108,7 +108,7 @@ def wake_up_single_computer(
     Send a wake-up call to a single computer by serial number
     
     Args:
-        serial_number: Computer serial number (e.g., C02C94GVLVDL)
+        serial_number: Computer serial number (e.g., C02XXXXXXXXX)
         dry_run: If True, only show what would be done without sending commands
         skip_confirmation: Skip user confirmation prompt
         
@@ -441,10 +441,10 @@ EXAMPLES:
   python main.py --dry-run
   
   # Wake up specific computer by serial number
-  python main.py C02C94GVLVDL
+  python main.py C02XXXXXXXXX
   
   # Wake up specific computer (dry-run)
-  python main.py C02C94GVLVDL --dry-run
+  python main.py C02XXXXXXXXX --dry-run
   
   # Wake up multiple computers from a file
   python main.py --file serials.txt
@@ -464,7 +464,7 @@ EXAMPLES:
     parser.add_argument(
         'serial',
         nargs='?',
-        help='Computer serial number to target (e.g., C02C94GVLVDL). If omitted, uses dynamic group from config.'
+        help='Computer serial number to target (e.g., C02XXXXXXXXX). If omitted, uses dynamic group from config.'
     )
     
     parser.add_argument(

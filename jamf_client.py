@@ -195,7 +195,7 @@ class JamfProClient:
         Get computer information by serial number using JSS Resource API
         
         Args:
-            serial_number: Computer serial number (e.g., C02C94GVLVDL or H644YVR9VT)
+            serial_number: Computer serial number (e.g., C02XXXXXXXXX)
             
         Returns:
             Computer dictionary with extended details
