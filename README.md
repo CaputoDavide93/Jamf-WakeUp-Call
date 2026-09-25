@@ -2,11 +2,11 @@
 
 # ⏰ Jamf Pro Wake-Up Call Script
 
-**A Python utility to remotely wake up and redeploy the Jamf Management Framework on macOS computers in your Jamf Pro environment.**
+**A Python utility to remotely wake up and redeploy the Jamf Management Framework on macOS computers in your Jamf Pro environment**
 
 ![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-macOS-lightgrey?logo=apple&logoColor=white)
 ![Jamf Pro](https://img.shields.io/badge/Jamf%20Pro-REST%20API-green)
+![Platform](https://img.shields.io/badge/Platform-macOS-lightgrey?logo=apple&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 ![Status](https://img.shields.io/badge/status-superseded-orange)
 [![CI](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/actions/workflows/ci.yml/badge.svg)](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/actions/workflows/ci.yml)
@@ -20,7 +20,7 @@
 
 ---
 
-## 📖 Overview
+## 🎯 Overview
 
 This script provides an easy-to-use interface to send wake-up commands (MDM redeploy commands) to macOS computers managed by Jamf Pro. It supports three operational modes:
 
@@ -40,7 +40,20 @@ When Jamf Pro devices enter sleep state or go offline, management commands may q
 
 ---
 
-## 🗺️ How it works
+## ✨ Features
+
+| | Feature | What it does |
+|---|---|---|
+| 🎯 | Multiple target modes | Entire dynamic groups, single serial, or batch from a serial-number file |
+| 🛟 | Safety features | Interactive confirmation, dry-run preview, detailed logging, informative errors |
+| 🔑 | Flexible authentication | Token-based (recommended) or username/password, with automatic token refresh |
+| 🔁 | Resilient API calls | GETs retry up to 3 times with backoff on `429` / `5xx`; redeploy POSTs are never retried, so no command is sent twice |
+| 🧱 | Placeholder guard | Values left unedited from `.env.example` are treated as unset, so the script never calls a fake tenant |
+| 🧑‍💻 | User-friendly | Formatted console output, comments in batch files, skip-confirmation for automation |
+
+---
+
+## 🗺️ Architecture
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
@@ -53,19 +66,6 @@ When Jamf Pro devices enter sleep state or go offline, management commands may q
 </picture>
 
 The script never talks to a Mac directly. It asks Jamf Pro to redeploy the management framework, and Jamf Pro delivers that as an MDM command the next time the Mac is reachable.
-
----
-
-## ✨ Features
-
-| | Feature | What it does |
-|---|---|---|
-| 🎯 | Multiple target modes | Entire dynamic groups, single serial, or batch from a serial-number file |
-| 🛟 | Safety features | Interactive confirmation, dry-run preview, detailed logging, informative errors |
-| 🔑 | Flexible authentication | Token-based (recommended) or username/password, with automatic token refresh |
-| 🔁 | Resilient API calls | GETs retry up to 3 times with backoff on `429` / `5xx`; redeploy POSTs are never retried, so no command is sent twice |
-| 🧱 | Placeholder guard | Values left unedited from `.env.example` are treated as unset, so the script never calls a fake tenant |
-| 🧑‍💻 | User-friendly | Formatted console output, comments in batch files, skip-confirmation for automation |
 
 ---
 
@@ -109,6 +109,27 @@ API_TIMEOUT=30
 ```
 
 > **⚠️ Important:** `JAMF_PRO_URL` is required — the script exits with an error if it's unset or still the `.env.example` placeholder. Never commit `.env` files with real credentials; the `.gitignore` is already configured to prevent this.
+
+---
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `JAMF_PRO_URL` | Yes | Base URL of your Jamf Pro instance (no default — the script exits if unset) |
+| `JAMF_PRO_USERNAME` | Yes* | Username for authentication |
+| `JAMF_PRO_PASSWORD` | Yes* | Password for authentication |
+| `JAMF_PRO_API_TOKEN` | Yes* | API Bearer token (alternative to username/password) |
+| `JAMF_DYNAMIC_GROUP_ID` | No | Default group ID for group mode |
+| `LOG_LEVEL` | No | Logging level (INFO, DEBUG, WARNING, ERROR) |
+| `LOG_FILE` | No | Log file path |
+| `API_TIMEOUT` | No | API request timeout in seconds |
+
+*Either username/password OR API token is required.
+
+Any value still starting with an `.env.example` placeholder (`your_`, `your-`, `dev_`, `https://your-`) is treated as missing.
 
 ---
 
@@ -261,24 +282,42 @@ Failed: 1
 
 ---
 
-## ⚙️ Configuration
+## 📁 Repo structure
 
-### Environment Variables
+```text
+Jamf-WakeUp-Call/
+├── src/
+│   ├── main.py           # 🎛️ CLI and orchestration (run with python3 -m src.main)
+│   ├── jamf_client.py    # 🔌 Jamf Pro API client
+│   └── config.py         # ⚙️ configuration management
+├── tests/                # ✅ pytest suite (config placeholders, diagrams)
+├── .github/workflows/    # 🤖 ci.yml (pytest on push and PR)
+├── tools/                # 🖌️ gen_diagram.py (redraws docs/assets/*.svg)
+├── docs/assets/          # 🗺️ diagram SVGs, light and dark
+├── requirements.txt      # 📜 runtime dependency ranges
+├── requirements.lock.txt # 🔒 pinned, hashed runtime lockfile (uv pip compile)
+├── requirements-dev.txt  # 🧪 dev extras (pytest)
+├── .env.example          # ⚙️ configuration template
+├── .gitignore            # 🙈 git ignore rules
+├── README.md             # 📖 this file
+├── SECURITY.md           # 🔒 vulnerability reporting and data handling
+└── LICENSE               # 📄 MIT License
+```
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `JAMF_PRO_URL` | Yes | Base URL of your Jamf Pro instance (no default — the script exits if unset) |
-| `JAMF_PRO_USERNAME` | Yes* | Username for authentication |
-| `JAMF_PRO_PASSWORD` | Yes* | Password for authentication |
-| `JAMF_PRO_API_TOKEN` | Yes* | API Bearer token (alternative to username/password) |
-| `JAMF_DYNAMIC_GROUP_ID` | No | Default group ID for group mode |
-| `LOG_LEVEL` | No | Logging level (INFO, DEBUG, WARNING, ERROR) |
-| `LOG_FILE` | No | Log file path |
-| `API_TIMEOUT` | No | API request timeout in seconds |
+---
 
-*Either username/password OR API token is required.
+## 🧪 Testing
 
-Any value still starting with an `.env.example` placeholder (`your_`, `your-`, `dev_`, `https://your-`) is treated as missing.
+```bash
+pip install -r requirements-dev.txt
+pytest tests/ -v
+```
+
+Regenerate the lockfile after changing `requirements.txt`:
+
+```bash
+uv pip compile requirements.txt -o requirements.lock.txt --python-version 3.9 --generate-hashes
+```
 
 ---
 
@@ -342,56 +381,17 @@ See [SECURITY.md](SECURITY.md) for how to report a vulnerability.
 
 ---
 
-## 📁 Repo structure
+## 🤝 Support
 
-```text
-Jamf-WakeUp-Call/
-├── src/
-│   ├── main.py           # 🎛️ CLI and orchestration (run with python3 -m src.main)
-│   ├── jamf_client.py    # 🔌 Jamf Pro API client
-│   └── config.py         # ⚙️ configuration management
-├── tests/                # ✅ pytest suite (config placeholders, diagrams)
-├── .github/workflows/    # 🤖 ci.yml (pytest on push and PR)
-├── tools/                # 🖌️ gen_diagram.py (redraws docs/assets/*.svg)
-├── docs/assets/          # 🗺️ diagram SVGs, light and dark
-├── requirements.txt      # 📜 runtime dependency ranges
-├── requirements.lock.txt # 🔒 pinned, hashed runtime lockfile (uv pip compile)
-├── requirements-dev.txt  # 🧪 dev extras (pytest)
-├── .env.example          # 🧪 configuration template
-├── .gitignore            # 🙈 git ignore rules
-├── README.md             # 📖 this file
-├── SECURITY.md           # 🔒 vulnerability reporting and data handling
-└── LICENSE               # 📄 MIT License
-```
+For issues, questions, or suggestions, please open an issue on GitHub.
 
----
-
-## 🧪 Testing
-
-```bash
-pip install -r requirements-dev.txt
-pytest tests/ -v
-```
-
-Regenerate the lockfile after changing `requirements.txt`:
-
-```bash
-uv pip compile requirements.txt -o requirements.lock.txt --python-version 3.9 --generate-hashes
-```
+**Disclaimer:** This script is provided as-is. Test thoroughly in a non-production environment before using in production. Always use `--dry-run` to preview changes before execution.
 
 ---
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🤝 Support
-
-For issues, questions, or suggestions, please open an issue on GitHub.
-
-**Disclaimer:** This script is provided as-is. Test thoroughly in a non-production environment before using in production. Always use `--dry-run` to preview changes before execution.
 
 ---
 
