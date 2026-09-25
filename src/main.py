@@ -5,8 +5,8 @@ import logging
 import json
 import sys
 from typing import Optional, List, Dict
-from jamf_client import JamfProClient
-import config
+from src.jamf_client import JamfProClient
+from src import config
 
 # Configure logging
 logging.basicConfig(
@@ -435,28 +435,28 @@ def main():
         epilog="""
 EXAMPLES:
   # Wake up entire dynamic group (with confirmation)
-  python main.py
+  python3 -m src.main
   
   # Wake up entire dynamic group (dry-run - no commands sent)
-  python main.py --dry-run
+  python3 -m src.main --dry-run
   
   # Wake up specific computer by serial number
-  python main.py C02XXXXXXXXX
+  python3 -m src.main C02XXXXXXXXX
   
   # Wake up specific computer (dry-run)
-  python main.py C02XXXXXXXXX --dry-run
+  python3 -m src.main C02XXXXXXXXX --dry-run
   
   # Wake up multiple computers from a file
-  python main.py --file serials.txt
+  python3 -m src.main --file serials.txt
   
   # Wake up multiple computers from a file (dry-run)
-  python main.py --file serials.txt --dry-run
+  python3 -m src.main --file serials.txt --dry-run
   
   # Target specific group
-  python main.py --group-id 42
+  python3 -m src.main --group-id 42
   
   # Skip confirmation (use with caution)
-  python main.py --skip-confirmation
+  python3 -m src.main --skip-confirmation
         """
     )
     

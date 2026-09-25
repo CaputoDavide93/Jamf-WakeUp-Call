@@ -9,6 +9,7 @@
 ![Jamf Pro](https://img.shields.io/badge/Jamf%20Pro-REST%20API-green)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 ![Status](https://img.shields.io/badge/status-superseded-orange)
+[![CI](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/actions/workflows/ci.yml/badge.svg)](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/actions/workflows/ci.yml)
 
 </div>
 
@@ -73,8 +74,8 @@ The script never talks to a Mac directly. It asks Jamf Pro to redeploy the manag
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/CaputoDavide93/Jamf_WakeUp_Call.git
-cd Jamf_WakeUp_Call
+git clone https://github.com/CaputoDavide93/Jamf-WakeUp-Call.git
+cd Jamf-WakeUp-Call
 ```
 
 ### 2. Install Dependencies
@@ -113,30 +114,32 @@ API_TIMEOUT=30
 
 ## 📖 Usage
 
+Run every command from the repository root — the code is the `src` package, so it is started with `python3 -m src.main`.
+
 ### Mode 1: Wake Up Entire Dynamic Group
 
 Wake up all computers in your configured dynamic group (with confirmation):
 
 ```bash
-python3 main.py
+python3 -m src.main
 ```
 
 Preview without sending commands:
 
 ```bash
-python3 main.py --dry-run
+python3 -m src.main --dry-run
 ```
 
 Skip confirmation (for automation):
 
 ```bash
-python3 main.py --skip-confirmation
+python3 -m src.main --skip-confirmation
 ```
 
 Target a different group:
 
 ```bash
-python3 main.py --group-id 42
+python3 -m src.main --group-id 42
 ```
 
 ### Mode 2: Wake Up Single Computer
@@ -144,13 +147,13 @@ python3 main.py --group-id 42
 Wake up a specific computer by serial number:
 
 ```bash
-python3 main.py C02XXXXXXXXX
+python3 -m src.main C02XXXXXXXXX
 ```
 
 Dry-run preview:
 
 ```bash
-python3 main.py C02XXXXXXXXX --dry-run
+python3 -m src.main C02XXXXXXXXX --dry-run
 ```
 
 ### Mode 3: Wake Up Multiple Computers from File
@@ -172,13 +175,13 @@ EOF
 Wake up all computers in the file:
 
 ```bash
-python3 main.py --file computers.txt
+python3 -m src.main --file computers.txt
 ```
 
 Preview first:
 
 ```bash
-python3 main.py --file computers.txt --dry-run
+python3 -m src.main --file computers.txt --dry-run
 ```
 
 ### File Format (for --file mode)
@@ -200,20 +203,21 @@ C02XXXXXXXX4
 ### Command-Line Options
 
 ```
-usage: main.py [-h] [--file FILE] [--group-id GROUP_ID] [--dry-run] 
-               [--skip-confirmation] [serial]
-
-Send wake-up calls to computers in Jamf Pro
+usage: python -m src.main [-h] [--file FILE] [--group-id GROUP_ID] [--dry-run]
+                          [--stop-on-error] [--skip-confirmation]
+                          [serial]
 
 positional arguments:
-  serial                Computer serial number (e.g., C02XXXXXXXXX)
+  serial               Computer serial number to target (e.g., C02XXXXXXXXX).
+                       If omitted, uses dynamic group from config.
 
-optional arguments:
-  -h, --help            show help message
-  --file FILE, -f FILE  File with serial numbers (one per line)
-  --group-id ID         Dynamic group ID (overrides config)
-  --dry-run             Show what would be done (no commands sent)
-  --skip-confirmation   Skip confirmation prompt
+options:
+  -h, --help           show this help message and exit
+  --file, -f FILE      File containing serial numbers (one per line)
+  --group-id GROUP_ID  Dynamic group ID (overrides config)
+  --dry-run            Show what would be done without sending commands
+  --stop-on-error      Stop processing if an error occurs (group mode only)
+  --skip-confirmation  Skip user confirmation prompt (use with caution)
 ```
 
 ### Output Examples
@@ -325,6 +329,8 @@ Set `LOG_LEVEL=DEBUG` in `.env` for detailed troubleshooting information.
 
 ## 🔒 Security
 
+See [SECURITY.md](SECURITY.md) for how to report a vulnerability.
+
 **Best Practices:**
 
 1. **Never commit `.env` files** - Already prevented by `.gitignore`
@@ -339,20 +345,23 @@ Set `LOG_LEVEL=DEBUG` in `.env` for detailed troubleshooting information.
 ## 📁 Repo structure
 
 ```text
-Jamf_WakeUp_Call/
-├── main.py              # 🎛️ main script with CLI and orchestration
-├── jamf_client.py       # 🔌 Jamf Pro API client
-├── config.py            # ⚙️ configuration management
-├── requirements.txt     # 📜 runtime dependency ranges
+Jamf-WakeUp-Call/
+├── src/
+│   ├── main.py           # 🎛️ CLI and orchestration (run with python3 -m src.main)
+│   ├── jamf_client.py    # 🔌 Jamf Pro API client
+│   └── config.py         # ⚙️ configuration management
+├── tests/                # ✅ pytest suite (config placeholders, diagrams)
+├── .github/workflows/    # 🤖 ci.yml (pytest on push and PR)
+├── tools/                # 🖌️ gen_diagram.py (redraws docs/assets/*.svg)
+├── docs/assets/          # 🗺️ diagram SVGs, light and dark
+├── requirements.txt      # 📜 runtime dependency ranges
 ├── requirements.lock.txt # 🔒 pinned, hashed runtime lockfile (uv pip compile)
-├── requirements-dev.txt # 🧪 dev extras (pytest)
-├── tests/               # ✅ pytest suite (config placeholders, diagrams)
-├── tools/               # 🖌️ gen_diagram.py (redraws docs/assets/*.svg)
-├── docs/assets/         # 🗺️ diagram SVGs, light and dark
-├── .env.example         # 🧪 configuration template
-├── .gitignore           # 🙈 git ignore rules
-├── README.md            # 📖 this file
-└── LICENSE              # 📄 MIT License
+├── requirements-dev.txt  # 🧪 dev extras (pytest)
+├── .env.example          # 🧪 configuration template
+├── .gitignore            # 🙈 git ignore rules
+├── README.md             # 📖 this file
+├── SECURITY.md           # 🔒 vulnerability reporting and data handling
+└── LICENSE               # 📄 MIT License
 ```
 
 ---

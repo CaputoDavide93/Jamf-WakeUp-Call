@@ -13,7 +13,7 @@ def _load_config(monkeypatch, **env):
         monkeypatch.setenv(key, value)
     import dotenv
     monkeypatch.setattr(dotenv, 'load_dotenv', lambda *a, **k: None)
-    import config
+    from src import config
     return importlib.reload(config)
 
 

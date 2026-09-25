@@ -208,7 +208,7 @@ def architecture(scheme):
           k.text(P - 116, 398, "for each computer, unless --dry-run", size=11.5,
                  colour=c["sub"], weight="600"))
     k.add(
-        msg(100, O, P, "python3 main.py"),
+        msg(100, O, P, "python3 -m src.main"),
         note(100, O, P, "group, one serial or a file"),
         msg(146, P, J, "POST /api/v1/auth/token"),
         note(146, P, J, "skipped when an API token is set"),
