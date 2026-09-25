@@ -2,31 +2,33 @@
 Configuration file for Jamf Pro Wake-Up Script
 """
 import os
-import sys
+from typing import Optional
 
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Jamf Pro API Configuration (required — no default)
-JAMF_PRO_URL = os.getenv('JAMF_PRO_URL', '').strip()
-if not JAMF_PRO_URL:
-    sys.exit(
-        "ERROR: JAMF_PRO_URL is not set.\n"
-        "Set it in your environment or .env file, e.g.:\n"
-        "  JAMF_PRO_URL=https://your-jamf-instance.jamfcloud.com"
-    )
+# Values copied unedited from .env.example are treated as unset
+_PLACEHOLDER_PREFIXES = ('your_', 'your-', 'dev_', 'https://your-')
+
+
+def _real_value(name: str) -> Optional[str]:
+    """Return the env var, or None if it is empty or still an example placeholder"""
+    value = os.getenv(name, '').strip()
+    if not value or value.lower().startswith(_PLACEHOLDER_PREFIXES):
+        return None
+    return value
+
+
+# Jamf Pro API Configuration (required, no default tenant)
+JAMF_PRO_URL = _real_value('JAMF_PRO_URL')
 
 # Authentication methods (supports both Token and Basic Auth)
 # Only set if actually provided (not empty placeholders)
-_token = os.getenv('JAMF_PRO_API_TOKEN', '').strip()
-_username = os.getenv('JAMF_PRO_USERNAME', '').strip()
-_password = os.getenv('JAMF_PRO_PASSWORD', '').strip()
-
-JAMF_PRO_API_TOKEN = _token if _token and not _token.startswith('your_') else None
-JAMF_PRO_USERNAME = _username if _username and not _username.startswith('dev_') else None
-JAMF_PRO_PASSWORD = _password if _password and not _password.startswith('dev_') else None
+JAMF_PRO_API_TOKEN = _real_value('JAMF_PRO_API_TOKEN')
+JAMF_PRO_USERNAME = _real_value('JAMF_PRO_USERNAME')
+JAMF_PRO_PASSWORD = _real_value('JAMF_PRO_PASSWORD')
 
 # Dynamic Group Configuration
 JAMF_DYNAMIC_GROUP_ID = os.getenv('JAMF_DYNAMIC_GROUP_ID', '')  # Optional - can target individual computers

@@ -8,8 +8,14 @@
 ![Platform](https://img.shields.io/badge/Platform-macOS-lightgrey?logo=apple&logoColor=white)
 ![Jamf Pro](https://img.shields.io/badge/Jamf%20Pro-REST%20API-green)
 ![License](https://img.shields.io/badge/License-MIT-blue)
+![Status](https://img.shields.io/badge/status-superseded-orange)
 
 </div>
+
+---
+
+> [!IMPORTANT]
+> **Superseded.** The same wake-up / redeploy logic now lives in **[Jamf-SnipeIT-Suite](https://github.com/CaputoDavide93/Jamf-SnipeIT-Suite)** as the `wakeup` module (`src/modules/maintenance/wakeup.py`), with retries and SSM-backed credentials. Use that for new work — this repo is kept for reference and receives fixes only.
 
 ---
 
@@ -28,6 +34,7 @@ When Jamf Pro devices enter sleep state or go offline, management commands may q
 - Processes multiple computers efficiently
 - Supports automation with batch files
 - Includes safety features (dry-run, confirmation prompts)
+- Retries read-only API calls on throttling and server errors
 - Provides detailed logging for troubleshooting
 
 ---
@@ -39,6 +46,8 @@ When Jamf Pro devices enter sleep state or go offline, management commands may q
 | 🎯 | Multiple target modes | Entire dynamic groups, single serial, or batch from a serial-number file |
 | 🛟 | Safety features | Interactive confirmation, dry-run preview, detailed logging, informative errors |
 | 🔑 | Flexible authentication | Token-based (recommended) or username/password, with automatic token refresh |
+| 🔁 | Resilient API calls | GETs retry up to 3 times with backoff on `429` / `5xx`; redeploy POSTs are never retried, so no command is sent twice |
+| 🧱 | Placeholder guard | Values left unedited from `.env.example` are treated as unset, so the script never calls a fake tenant |
 | 🧑‍💻 | User-friendly | Formatted console output, comments in batch files, skip-confirmation for automation |
 
 ---
@@ -55,7 +64,9 @@ cd Jamf_WakeUp_Call
 ### 2. Install Dependencies
 
 ```bash
-pip install requests python-dotenv
+pip install -r requirements.lock.txt     # pinned, hash-checked runtime deps
+# or, for development (adds pytest):
+pip install -r requirements-dev.txt
 ```
 
 ### 3. Configure Credentials
@@ -80,7 +91,7 @@ LOG_FILE=jamf_wakeup.log
 API_TIMEOUT=30
 ```
 
-> **⚠️ Important:** `JAMF_PRO_URL` is required — the script exits with an error if it's unset. Never commit `.env` files with real credentials; the `.gitignore` is already configured to prevent this.
+> **⚠️ Important:** `JAMF_PRO_URL` is required — the script exits with an error if it's unset or still the `.env.example` placeholder. Never commit `.env` files with real credentials; the `.gitignore` is already configured to prevent this.
 
 ---
 
@@ -247,6 +258,8 @@ Failed: 1
 
 *Either username/password OR API token is required.
 
+Any value still starting with an `.env.example` placeholder (`your_`, `your-`, `dev_`, `https://your-`) is treated as missing.
+
 ---
 
 ## 🛠️ Troubleshooting
@@ -277,6 +290,10 @@ Failed: 1
 - Verify `JAMF_PRO_URL` is correct and reachable
 - Check internet connectivity
 - Ensure there are no firewall rules blocking the connection
+
+### 429 Too Many Requests / 5xx
+
+Read requests are retried automatically (3 attempts, exponential backoff). If a run still fails, wait a few minutes and re-run (use `--dry-run` first to confirm the targets).
 
 ### Logging
 
@@ -310,11 +327,29 @@ Jamf_WakeUp_Call/
 ├── main.py              # 🎛️ main script with CLI and orchestration
 ├── jamf_client.py       # 🔌 Jamf Pro API client
 ├── config.py            # ⚙️ configuration management
-├── requirements.txt     # 📜 Python dependencies
+├── requirements.txt     # 📜 runtime dependency ranges
+├── requirements.lock.txt # 🔒 pinned, hashed runtime lockfile (uv pip compile)
+├── requirements-dev.txt # 🧪 dev extras (pytest)
+├── tests/               # ✅ pytest suite (config placeholder handling)
 ├── .env.example         # 🧪 configuration template
 ├── .gitignore           # 🙈 git ignore rules
 ├── README.md            # 📖 this file
 └── LICENSE              # 📄 MIT License
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+pip install -r requirements-dev.txt
+pytest tests/ -v
+```
+
+Regenerate the lockfile after changing `requirements.txt`:
+
+```bash
+uv pip compile requirements.txt -o requirements.lock.txt --python-version 3.9 --generate-hashes
 ```
 
 ---

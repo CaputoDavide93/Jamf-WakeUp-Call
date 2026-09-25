@@ -6,7 +6,9 @@ import requests
 import time
 from typing import List, Dict, Optional
 from urllib.parse import urljoin
+from requests.adapters import HTTPAdapter
 from requests.auth import HTTPBasicAuth
+from urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +85,11 @@ class JamfProClient:
     def _create_session(self) -> requests.Session:
         """Create a requests session with proper headers and authentication"""
         session = requests.Session()
+        
+        # Retry idempotent GETs on throttling/5xx; POSTs (redeploy) are never retried
+        retry = Retry(total=3, backoff_factor=1, status_forcelist=(429, 500, 502, 503, 504),
+                      allowed_methods=frozenset(['GET']), raise_on_status=False)
+        session.mount('https://', HTTPAdapter(max_retries=retry))
         
         # Set common headers
         session.headers.update({
