@@ -58,14 +58,25 @@ When Jamf Pro devices enter sleep state or go offline, management commands may q
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
   <img src="docs/assets/architecture-light.svg" width="100%"
-       alt="The operator runs main.py, which gets a bearer token from Jamf Pro when it has no API
-            token, resolves the dynamic group, serial or serial file to computer records, and asks
-            for confirmation. Unless --dry-run is set it then posts one management-framework redeploy
-            per computer; Jamf Pro sends the MDM command over APNs and the Mac reinstalls the Jamf
-            framework.">
+       alt="The operator runs the wake-up CLI with a serial, a serial file or a dynamic group; the CLI
+            reads .env, reads computer records from Jamf Pro and posts one management-framework
+            redeploy per computer, which Jamf Pro delivers to the Mac as an MDM command over APNs.">
 </picture>
 
 The script never talks to a Mac directly. It asks Jamf Pro to redeploy the management framework, and Jamf Pro delivers that as an MDM command the next time the Mac is reachable.
+
+One wake-up, call by call:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/wake-sequence-dark.svg">
+  <img src="docs/assets/wake-sequence-light.svg" width="100%"
+       alt="Sequence of one wake-up: main.py gets a bearer token from Jamf Pro unless an API token is
+            set, fetches the group or serial records, asks the operator to confirm, then posts one
+            redeploy per computer unless --dry-run is set; Jamf Pro sends the MDM command over APNs
+            and the Mac reinstalls the Jamf framework.">
+</picture>
+
+Redraw both with `python3 tools/gen_diagram.py`; CI runs `python3 tools/gen_diagram.py --check` and fails if a committed SVG is stale.
 
 ---
 
@@ -291,7 +302,7 @@ Jamf-WakeUp-Call/
 │   ├── jamf_client.py    # 🔌 Jamf Pro API client
 │   └── config.py         # ⚙️ configuration management
 ├── tests/                # ✅ pytest suite (config placeholders, diagrams)
-├── .github/workflows/    # 🤖 ci.yml (pytest on push and PR)
+├── .github/workflows/    # 🤖 ci.yml (pytest and diagram check on push and PR)
 ├── tools/                # 🖌️ gen_diagram.py (redraws docs/assets/*.svg)
 ├── docs/assets/          # 🗺️ diagram SVGs, light and dark
 ├── requirements.txt      # 📜 runtime dependency ranges
