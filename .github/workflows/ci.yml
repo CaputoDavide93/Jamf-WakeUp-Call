@@ -19,6 +19,8 @@ jobs:
           python-version: "3.12"
       - name: Diagrams up to date
         run: python3 tools/gen_diagram.py --check
+      - name: Icon up to date
+        run: sh tools/brand/check-icon.sh
       - name: Install dependencies
         run: pip install -r requirements-dev.txt
       - name: Test
