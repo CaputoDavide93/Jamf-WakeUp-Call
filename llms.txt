@@ -1,0 +1,31 @@
+# Jamf WakeUp Call
+
+> Jamf WakeUp Call is a free, open-source (MIT) Python command line tool for Jamf Pro administrators. It asks Jamf Pro to redeploy the Jamf management framework on macOS computers that stopped checking in, chosen by dynamic group, by serial number or from a file of serial numbers. It previews the targets with a dry run, asks for confirmation, sends one redeploy command per computer and prints a result with the command UUID for each. This repository is superseded by Jamf-SnipeIT-Suite, which contains the same logic as its wakeup module, and it receives fixes only.
+
+Key facts:
+
+- Tested on: Python 3.12 on Linux (CI runs the pytest suite and the diagram check) and Python 3.14 on macOS (test suite, and the CLI against a local mock of Jamf Pro with made-up computers). Python 3.9 to 3.11 is unverified.
+- Not verified: a live Jamf Pro server, any specific Jamf Pro version, and any specific Mac or macOS version. The tests and screenshots use a local mock that follows the documented response shapes.
+- Install: `git clone https://github.com/CaputoDavide93/Jamf-WakeUp-Call.git`, `pip install -r requirements.lock.txt`, copy `.env.example` to `.env` and set `JAMF_PRO_URL` plus either `JAMF_PRO_API_TOKEN` or `JAMF_PRO_USERNAME` and `JAMF_PRO_PASSWORD`.
+- Run: `python3 -m src.main --group-id 42 --dry-run` to preview a group, `python3 -m src.main C02EXAMPLE001` for one serial number, `python3 -m src.main --file computers.txt` for a file of serials. Run from the repository root.
+- Dry run: `--dry-run` sends nothing, but the yes/no confirmation prompt still appears first unless `--skip-confirmation` is set.
+- API calls: Jamf Pro Classic API lookups for groups, computers and serials, then `POST /api/v1/jamf-management-framework/redeploy/{id}` per computer.
+- Retries: read requests retry up to 3 times on 429 and 5xx over HTTPS. The redeploy POST is never retried, so a command is not sent twice.
+- Limit: the tool only queues the command in Jamf Pro. It cannot tell whether the Mac received it; the Mac must be on, online and able to reach Apple's push service.
+- Security: credentials come from the environment or a local .env file. The log file records computer IDs and serial numbers.
+- Independent project, not affiliated with or endorsed by Jamf.
+
+## Docs
+
+- [README](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/blob/main/README.md): why it exists, comparison with one-off scripts, install in 3 steps, tested environments
+- [Setup](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/blob/main/docs/setup.md): clone to first wake-up, with output
+- [Usage](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/blob/main/docs/usage.md): modes, flags, serial file format, exit codes
+- [Configuration](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/blob/main/docs/configuration.md): every environment variable
+- [FAQ](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/blob/main/docs/faq.md): short answers
+- [Troubleshooting](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/blob/main/docs/troubleshooting.md): symptoms and fixes
+- [How it works](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/blob/main/docs/how-it-works.md): authentication, API calls, retries, what a result means
+
+## Optional
+
+- [Security policy](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/blob/main/SECURITY.md)
+- [Contributing](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/blob/main/CONTRIBUTING.md)
