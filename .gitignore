@@ -30,6 +30,8 @@ venv/
 ENV/
 env/
 .venv
+.venv-screenshots/
+.ruff_cache/
 
 # IDE
 .vscode/
