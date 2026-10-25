@@ -15,6 +15,7 @@ diagram: ## Redraw docs/assets/*.svg
 
 check: test ## Everything CI checks
 	python3 tools/gen_diagram.py --check
+	sh tools/brand/check-icon.sh
 
 screenshots: venv ## Retake docs/assets/screenshots/ against the demo mock (not CI)
 	test -x .venv-screenshots/bin/python || ( \
@@ -23,6 +24,5 @@ screenshots: venv ## Retake docs/assets/screenshots/ against the demo mock (not 
 	.venv-screenshots/bin/python -m playwright install chromium
 	.venv-screenshots/bin/python tools/screenshots/take_screenshots.py
 
-social-preview: ## Redraw docs/assets/social-preview.png (needs the screenshot environment)
-	test -x .venv-screenshots/bin/python || $(MAKE) screenshots
-	.venv-screenshots/bin/python tools/screenshots/social_preview.py
+social-preview: ## Redraw docs/assets/social-preview.png (needs Google Chrome and pillow)
+	python3 tools/brand/brand_kit.py social --repo Jamf-WakeUp-Call --name "Jamf WakeUp Call" --tagline "Wake the Macs that stopped checking in to Jamf Pro, by group, serial or file" --chip "Dry run first" --chip "Group, serial or file" --chip "Jamf Pro API" --icon docs/assets/brand/icon.svg

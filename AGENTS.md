@@ -29,7 +29,7 @@ This repository follows Davide Caputo's house standards. The full spec is
 
 <!-- ── repo-specific notes below this line ─────────────────────────────── -->
 
-- Run `make check` (pytest plus `python3 tools/gen_diagram.py --check`) before and after every change. CI runs the same.
+- Run `make check` (pytest, `python3 tools/gen_diagram.py --check` and `sh tools/brand/check-icon.sh`) before and after every change. CI runs the same.
 - This repo is superseded by Jamf-SnipeIT-Suite and public. Demo data only: `example.com` hosts, made-up serials such as `DEMO0000101`, no real tenant, device, user or employer names.
 - The screenshots come from `make screenshots` (real CLI against `tools/screenshots/mock_jamf.py`). Retake them when CLI output changes.
 - Anything that needs a real Jamf Pro tenant is unverified unless it was run against one; say so in the docs.

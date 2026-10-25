@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/brand/icon.svg" width="96" alt="Jamf WakeUp Call icon: a sun rising over a laptop">
+<img src="docs/assets/brand/icon.svg" width="96" alt="Jamf WakeUp Call icon: a white power symbol on a green tile">
 
 # ⏰ Jamf WakeUp Call
 
@@ -175,7 +175,8 @@ Jamf-WakeUp-Call/
 ├── tests/                  # ✅ pytest: config placeholders, diagrams, docs links
 ├── tools/
 │   ├── gen_diagram.py      # 🖌️ redraws docs/assets/*.svg
-│   └── screenshots/        # 📸 demo mock of Jamf Pro, screenshot and social preview scripts
+│   ├── brand/              # 🎨 vendored icon and social preview generator, icon freshness check
+│   └── screenshots/        # 📸 demo mock of Jamf Pro and the screenshot script
 ├── docs/                   # 📚 setup, usage, configuration, how it works, troubleshooting, FAQ
 │   └── assets/             # 🗺️ diagrams, screenshots, brand icon, social preview
 ├── .github/                # 🤖 ci.yml and the environment report issue form
@@ -193,7 +194,7 @@ Jamf-WakeUp-Call/
 
 ```bash
 make venv     # creates .venv with the dev requirements
-make check    # pytest, then the diagram check; the same two steps CI runs
+make check    # pytest, the diagram check and the icon check
 ```
 
 Regenerate the lockfile after changing `requirements.txt`:

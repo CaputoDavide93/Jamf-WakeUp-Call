@@ -18,7 +18,7 @@ Before you paste anything, remove tokens, passwords, your server URL, serial num
 
 1. Branch from `main`.
 2. Make the change and add a test where it fits.
-3. Run `make venv` once, then `make check`. It runs the pytest suite and the diagram check, the same as CI.
+3. Run `make venv` once, then `make check`. It runs the pytest suite, the diagram check and the icon check.
 4. Open a pull request with a conventional title such as `fix: ...` or `docs: ...`.
 
 If you change a diagram, run `python3 tools/gen_diagram.py` and commit the SVGs. If you change what the CLI prints, retake the screenshots with `make screenshots`.
