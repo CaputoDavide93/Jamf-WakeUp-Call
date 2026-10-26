@@ -2,8 +2,6 @@
 Main script to wake up computers in Jamf Pro dynamic group
 """
 import logging
-import json
-import sys
 from typing import Optional, List, Dict
 from src.jamf_client import JamfProClient
 from src import config
@@ -146,7 +144,7 @@ def wake_up_single_computer(
             
             computers = [computer]  # Wrap in list for consistency
             
-            logger.info(f"Found computer to process")
+            logger.info("Found computer to process")
             
             # Show summary with confirmation
             if not skip_confirmation:
