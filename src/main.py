@@ -41,6 +41,14 @@ def validate_config() -> bool:
     return True
 
 
+def computer_field(computer: Dict, key: str, default=None):
+    """Read id/name from a Classic API record (under `general`) or a flat one"""
+    value = computer.get('general', {}).get(key)
+    if value is None:
+        value = computer.get(key)
+    return default if value is None else value
+
+
 def format_computer_display(computer_data: Dict, client: JamfProClient) -> str:
     """
     Format computer data for display in dry-run
@@ -52,8 +60,8 @@ def format_computer_display(computer_data: Dict, client: JamfProClient) -> str:
     Returns:
         Formatted string for display
     """
-    comp_id = computer_data.get('id', 'N/A')
-    comp_name = computer_data.get('name', 'Unknown')
+    comp_id = computer_field(computer_data, 'id', 'N/A')
+    comp_name = computer_field(computer_data, 'name', 'Unknown')
     
     # Extract user information
     user_info = client.extract_user_info(computer_data)
@@ -161,7 +169,7 @@ def wake_up_single_computer(
                 print("\n" + "="*100)
                 print("WAKE-UP COMMAND SENT")
                 print("="*100)
-                print(f"✓ Computer {computer_id} ({computer.get('name')})")
+                print(f"✓ Computer {computer_id} ({computer_field(computer, 'name')})")
                 print(f"  Device ID: {result.get('deviceId')}")
                 print(f"  Command UUID: {result.get('commandUuid')}")
                 print("="*100 + "\n")
