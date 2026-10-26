@@ -1,6 +1,6 @@
 # Jamf WakeUp Call
 
-> Jamf WakeUp Call is a free, open-source (MIT) Python command line tool for Jamf Pro administrators. It asks Jamf Pro to redeploy the Jamf management framework on macOS computers that stopped checking in, chosen by dynamic group, by serial number or from a file of serial numbers. It previews the targets with a dry run, asks for confirmation, sends one redeploy command per computer and prints a result with the command UUID for each. This repository is superseded by Jamf-SnipeIT-Suite, which contains the same logic as its wakeup module, and it receives fixes only.
+> Jamf WakeUp Call is a free, open-source (MIT) Python command line tool for Jamf Pro administrators. It asks Jamf Pro to redeploy the Jamf management framework on macOS computers that stopped checking in, chosen by dynamic group, by serial number or from a file of serial numbers. It previews the targets with a dry run, asks for confirmation, sends one redeploy command per computer and prints a result with the command UUID for each. This repository is superseded by Jamf-Snipe-IT-Suite, which contains the same logic as its wakeup module, and it receives fixes only.
 
 Key facts:
 

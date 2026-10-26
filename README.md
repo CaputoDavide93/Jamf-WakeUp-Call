@@ -18,7 +18,7 @@
 ---
 
 > [!IMPORTANT]
-> **Superseded.** The same wake-up and redeploy logic now lives in **[Jamf-SnipeIT-Suite](https://github.com/CaputoDavide93/Jamf-SnipeIT-Suite)** as the `wakeup` module (`src/modules/maintenance/wakeup.py`), with retries and SSM-backed credentials. Use that for new work. This repo is kept for reference and receives fixes only.
+> **Superseded.** The same wake-up and redeploy logic now lives in **[Jamf-Snipe-IT-Suite](https://github.com/CaputoDavide93/Jamf-Snipe-IT-Suite)** as the `wakeup` module (`src/modules/maintenance/wakeup.py`), with retries and SSM-backed credentials. Use that for new work. This repo is kept for reference and receives fixes only.
 
 ---
 

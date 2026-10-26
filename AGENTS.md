@@ -1,7 +1,7 @@
 # Agent instructions
 
 This repository follows Davide Caputo's house standards. The full spec is
-[`reference/STYLE.md` in repo-standards](https://github.com/CaputoDavide93/repo-standards/blob/main/reference/STYLE.md)
+[`reference/STYLE.md` in Repo-Standards](https://github.com/CaputoDavide93/Repo-Standards/blob/main/reference/STYLE.md)
 (private). When this summary and the spec disagree, the spec wins.
 
 ## Rules that apply to every change
@@ -30,6 +30,6 @@ This repository follows Davide Caputo's house standards. The full spec is
 <!-- ── repo-specific notes below this line ─────────────────────────────── -->
 
 - Run `make check` (pytest, `python3 tools/gen_diagram.py --check` and `sh tools/brand/check-icon.sh`) before and after every change. CI runs the same.
-- This repo is superseded by Jamf-SnipeIT-Suite and public. Demo data only: `example.com` hosts, made-up serials such as `DEMO0000101`, no real tenant, device, user or employer names.
+- This repo is superseded by Jamf-Snipe-IT-Suite and public. Demo data only: `example.com` hosts, made-up serials such as `DEMO0000101`, no real tenant, device, user or employer names.
 - The screenshots come from `make screenshots` (real CLI against `tools/screenshots/mock_jamf.py`). Retake them when CLI output changes.
 - Anything that needs a real Jamf Pro tenant is unverified unless it was run against one; say so in the docs.

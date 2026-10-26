@@ -6,7 +6,7 @@ Please report vulnerabilities privately via
 [GitHub Security Advisories](https://github.com/CaputoDavide93/Jamf-WakeUp-Call/security/advisories/new)
 rather than opening a public issue. You should get a response within a week.
 
-> This repository is superseded by [Jamf-SnipeIT-Suite](https://github.com/CaputoDavide93/Jamf-SnipeIT-Suite) and receives fixes only.
+> This repository is superseded by [Jamf-Snipe-IT-Suite](https://github.com/CaputoDavide93/Jamf-Snipe-IT-Suite) and receives fixes only.
 
 ## Data handling
 
