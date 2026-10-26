@@ -7,7 +7,6 @@ import time
 from typing import List, Dict, Optional
 from urllib.parse import urljoin
 from requests.adapters import HTTPAdapter
-from requests.auth import HTTPBasicAuth
 from urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)
@@ -232,32 +231,6 @@ class JamfProClient:
             return computer
         except Exception as e:
             logger.error(f"Failed to fetch computer by serial {serial_number}: {e}")
-            raise
-    
-    def search_computers_by_criteria(self, criteria: Dict) -> List[Dict]:
-        """
-        Search for computers by specific criteria
-        
-        Args:
-            criteria: Search criteria (e.g., checked in last 15 days)
-            
-        Returns:
-            List of matching computers
-        """
-        logger.info(f"Searching computers with criteria: {criteria}")
-        
-        try:
-            # Build query parameters
-            params = criteria
-            response = self._make_request('GET', '/api/v2/computers', params=params)
-            data = response.json()
-            
-            computers = data.get('results', [])
-            logger.info(f"Found {len(computers)} computers matching criteria")
-            
-            return computers
-        except Exception as e:
-            logger.error(f"Failed to search computers: {e}")
             raise
     
     def redeploy_management_framework(self, computer_id: str) -> Dict:
