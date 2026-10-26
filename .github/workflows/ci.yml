@@ -20,6 +20,8 @@ jobs:
       - name: Diagrams up to date
         run: python3 tools/gen_diagram.py --check
       - name: Install dependencies
-        run: pip install -r requirements-dev.txt
+        run: pip install -r requirements-dev.txt pillow
+      - name: Icon up to date
+        run: sh tools/brand/check-icon.sh
       - name: Test
         run: pytest tests/ -v

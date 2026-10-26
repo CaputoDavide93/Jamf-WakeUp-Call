@@ -12,8 +12,8 @@ rather than opening a public issue. You should get a response within a week.
 
 - The script reads Jamf Pro computer records (computer ID, name, serial number) for the targeted group, serial or file, and sends management-framework redeploy commands for them.
 - It talks only to the Jamf Pro instance set in `JAMF_PRO_URL` (use an `https://` URL); there are no other third parties and nothing is stored beyond the log file.
-- The log file (`LOG_FILE`, default `jamf_wakeup.log`) records computer IDs and serial numbers — treat it as internal data. It is git-ignored.
-- Credentials (`JAMF_PRO_API_TOKEN`, or `JAMF_PRO_USERNAME` / `JAMF_PRO_PASSWORD`) are read from the environment / a local `.env` file — never committed or echoed. `.env` is git-ignored.
+- The log file (`LOG_FILE`, default `jamf_wakeup.log`) records computer IDs and serial numbers; treat it as internal data. It is git-ignored.
+- Credentials (`JAMF_PRO_API_TOKEN`, or `JAMF_PRO_USERNAME` / `JAMF_PRO_PASSWORD`) are read from the environment / a local `.env` file and never committed or echoed. `.env` is git-ignored.
 
 ## Deployment checklist
 

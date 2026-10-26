@@ -20,7 +20,7 @@ def _load_config(monkeypatch, **env):
 def test_example_placeholders_are_treated_as_unset(monkeypatch):
     cfg = _load_config(
         monkeypatch,
-        JAMF_PRO_URL='https://your-jamf-instance.jamfcloud.com',
+        JAMF_PRO_URL='https://your-jamf.example.com',
         JAMF_PRO_USERNAME='your_username',
         JAMF_PRO_PASSWORD='your_password',
         JAMF_PRO_API_TOKEN='your_bearer_token',
@@ -38,10 +38,10 @@ def test_url_has_no_default_tenant(monkeypatch):
 def test_real_values_pass_through(monkeypatch):
     cfg = _load_config(
         monkeypatch,
-        JAMF_PRO_URL='https://example.jamfcloud.com',
+        JAMF_PRO_URL='https://jamf.example.com',
         JAMF_PRO_USERNAME='svc-wakeup',
         JAMF_PRO_PASSWORD='s3cret',
     )
-    assert cfg.JAMF_PRO_URL == 'https://example.jamfcloud.com'
+    assert cfg.JAMF_PRO_URL == 'https://jamf.example.com'
     assert cfg.JAMF_PRO_USERNAME == 'svc-wakeup'
     assert cfg.JAMF_PRO_PASSWORD == 's3cret'
