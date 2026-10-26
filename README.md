@@ -184,7 +184,7 @@ Jamf-WakeUp-Call/
 ├── llms.txt                # 🤖 the project in one plain-text page for search engines
 ├── requirements*.txt       # 📜 ranges, hashed lockfile, dev extras
 ├── .env.example            # ⚙️ configuration template
-├── AGENTS.md  CLAUDE.md    # 🧭 contributor instructions
+├── AGENTS.md               # 🧭 agent and contributor instructions
 └── LICENSE  SECURITY.md  CONTRIBUTING.md   # 📄 community files
 ```
 
