@@ -42,7 +42,7 @@ Credentials are read from the environment or a local `.env` and are not written 
 
 ## Why is this repository superseded?
 
-The same logic moved into [Jamf-SnipeIT-Suite](https://github.com/CaputoDavide93/Jamf-SnipeIT-Suite) as its `wakeup` module, with retries and SSM-backed credentials. This repo stays for reference and receives fixes only.
+The same logic moved into [Jamf-Snipe-IT-Suite](https://github.com/CaputoDavide93/Jamf-Snipe-IT-Suite) as its `wakeup` module, with retries and SSM-backed credentials. This repo stays for reference and receives fixes only.
 
 ## How do I report that it works, or does not, on my setup?
 

@@ -1,6 +1,6 @@
 # Contributing
 
-This repository is superseded by [Jamf-SnipeIT-Suite](https://github.com/CaputoDavide93/Jamf-SnipeIT-Suite) and receives fixes only. Bug reports, small fixes and environment reports are welcome.
+This repository is superseded by [Jamf-Snipe-IT-Suite](https://github.com/CaputoDavide93/Jamf-Snipe-IT-Suite) and receives fixes only. Bug reports, small fixes and environment reports are welcome.
 
 ## Report an environment
 

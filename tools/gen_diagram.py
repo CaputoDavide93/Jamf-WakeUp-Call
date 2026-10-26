@@ -301,7 +301,7 @@ def wake_sequence(scheme):
         msg(518, J, D, "MDM command via APNs"),
         # The last step is the Mac's own, so it is a note on its lane, not a message.
         k.box(D - 88, 540, 176, 64, "Jamf framework", ["reinstalled"], tone="soft"),
-        k.footer("Superseded by the wakeup module in Jamf-SnipeIT-Suite. Reads are retried "
+        k.footer("Superseded by the wakeup module in Jamf-Snipe-IT-Suite. Reads are retried "
                  "on 429 and 5xx; a redeploy is sent once, never retried."),
     )
     return k.render()
