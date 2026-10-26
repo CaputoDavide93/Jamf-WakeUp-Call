@@ -24,13 +24,13 @@
 
 ## ✨ Features
 
-Jamf WakeUp Call is a small Python command line tool for Jamf Pro administrators. Some Macs go quiet: MDM commands queue and nothing happens. You give the tool a dynamic group, a serial number or a file of serials, and it asks Jamf Pro to redeploy the Jamf management framework on each of those computers.
+Some Macs go quiet: MDM commands queue and nothing happens. Jamf WakeUp Call is a small Python command line tool for Jamf Pro administrators. Give it a dynamic group, a serial number or a file of serials, and it asks Jamf Pro to redeploy the Jamf management framework on each of those computers.
 
 ### Why it exists
 
-A Mac that sleeps through its check-ins, or whose framework has gone stale, stops acting on policies and commands. The Jamf Pro API has a call that redeploys the framework, but using it for forty Macs means looking up forty computer IDs and sending forty requests by hand, with no preview and no tally of which ones took.
+A Mac that sleeps through its check-ins, or whose framework has gone stale, stops acting on policies and commands. The Jamf Pro API has a call that redeploys the framework. For forty Macs that means forty computer ID lookups and forty requests by hand, with no preview and no tally of which ones took.
 
-This tool does the lookup, shows you the list, sends the commands and prints one result per computer, including the command UUID Jamf Pro returns.
+This tool looks the computers up, shows you the list, sends the commands and prints one result per computer, with the command UUID Jamf Pro returns.
 
 | | Jamf WakeUp Call | A one-off curl or script |
 |---|---|---|
@@ -88,7 +88,6 @@ Never run a first test on production Macs. Try one serial first: `python3 -m src
 | 🔑 | Two ways to authenticate | A bearer token, or username and password with a token fetched and refreshed for you |
 | 🔁 | Safe retries | Reads retry up to 3 times with backoff on `429` and `5xx` over HTTPS; the redeploy POST is never retried, so no command is sent twice |
 | 🧱 | Placeholder guard | Values left unedited from `.env.example` count as unset, so the tool never calls a fake server |
-| 🧪 | Tested and diagram-checked | CI runs the pytest suite and fails when a committed diagram is out of date |
 
 ---
 
