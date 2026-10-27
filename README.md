@@ -108,7 +108,7 @@ One wake-up, call by call:
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/wake-sequence-dark.svg">
   <img src="docs/assets/wake-sequence-light.svg" width="100%"
-       alt="Sequence of one wake-up: main.py gets a bearer token from Jamf Pro unless an API token is
+       alt="One wake-up as cards and arrows: the Wake-Up Call CLI gets a bearer token from Jamf Pro unless an API token is
             set, fetches the group or serial records, asks the operator to confirm, then posts one
             redeploy per computer unless --dry-run is set; Jamf Pro sends the MDM command over APNs
             and the Mac reinstalls the Jamf framework.">
