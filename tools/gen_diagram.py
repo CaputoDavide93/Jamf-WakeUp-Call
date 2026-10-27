@@ -220,6 +220,22 @@ class Canvas:
 
 # ── the diagrams ──────────────────────────────────────────────────────────
 
+def card(k, x, y, w, h, title, lines=(), *, icon=None, tone="plain"):
+    """A box whose sub-lines may be monospace: `lines` holds strings, or
+    (text, True) for something literally typed, such as an endpoint."""
+    rows = [(r, False) if isinstance(r, str) else r for r in lines]
+    svg = k.box(x, y, w, h, title, [t for t, _ in rows], icon=icon, tone=tone)
+    c = k.c
+    colour = {"accent": c["on_accent"], "warn": c["warn"]}.get(tone, c["sub"])
+    for i, (t, mono) in enumerate(rows):
+        if mono:
+            plain = k.text(x + 16, y + 52 + i * 18, t, size=12.5, colour=colour,
+                           opacity="0.85" if tone == "accent" else None)
+            svg = svg.replace(plain, k.text(x + 16, y + 52 + i * 18, t, size=12,
+                                            colour=colour, font=MONO))
+    return svg
+
+
 def architecture(scheme):
     k = Canvas(1180, 430, scheme,
                "The operator runs the wake-up CLI with a serial, a serial file or a dynamic "
@@ -235,8 +251,8 @@ def architecture(scheme):
         k.box(xs[0], top, W, H, "Operator", ["Serial, serial file or group,", "confirms before sending"], icon="user"),
         k.box(xs[1], top, W, H, "Wake-Up Call CLI", ["python3 -m src.main", "one redeploy per computer"], icon="terminal", tone="accent"),
         k.box(xs[2], top, W, H, "Jamf Pro", ["Classic and Jamf Pro API", "token or basic auth"], icon="server"),
-        k.box(xs[1], low, W, H, "Local files", [".env: URL, credentials, group", "jamf_wakeup.log"], icon="file"),
-        k.box(xs[2], low, W, H, "Mac", ["Reinstalls the Jamf framework", "when it is next reachable"], icon="laptop"),
+        k.box(xs[1], low, W, H, "Local Files", [".env: URL, credentials, group", "jamf_wakeup.log"], icon="file"),
+        k.box(xs[2], low, W, H, "Mac", ["Gets the MDM command and", "reinstalls the Jamf framework"], icon="laptop"),
         k.edge([(xs[0] + W + 8, mid), (xs[1] - 8, mid)], label="args, yes / no", both=True),
         k.edge([(xs[1] + W + 8, mid), (xs[2] - 8, mid)], label="GET records"),
         k.text((xs[1] + W + xs[2]) / 2, mid + 21, "POST redeploy/{id}", size=11.5, font=MONO,
@@ -254,53 +270,49 @@ def architecture(scheme):
 
 
 def wake_sequence(scheme):
-    """One wake-up, end to end. A sequence, so it gets lifelines."""
-    k = Canvas(1180, 690, scheme,
-               "The operator runs main.py, which gets a bearer token from Jamf Pro when it has "
-               "no API token, resolves the dynamic group, serial or serial file to computer "
-               "records, and asks for confirmation. Unless --dry-run is set it then posts one "
-               "management-framework redeploy per computer; Jamf Pro sends the MDM command "
+    """One wake-up, end to end. Cards, not lifelines: the request path reads
+    left to right, the reply is the dashed arrow."""
+    k = Canvas(1180, 480, scheme,
+               "The operator runs the Wake-Up Call CLI. It signs in to Jamf Pro unless an API "
+               "token is set and reads the computer records for the group, serial or serial "
+               "file. The operator confirms, then unless --dry-run is set the CLI posts one "
+               "management-framework redeploy per computer. Jamf Pro sends the MDM command "
                "over APNs and the Mac reinstalls the Jamf framework.")
     c = k.c
-    O, P, J, D = 116, 340, 820, 1064
-    lanes = [("Operator", O, "user", "plain"), ("main.py", P, "terminal", "accent"),
-             ("Jamf Pro", J, "server", "plain"), ("Mac", D, "laptop", "plain")]
-    top, bottom = 84, 616
-    for name, x, icon, tone in lanes:
-        w = 176
-        k.add(k.box(x - w / 2, 26, w, 44, name, icon=icon, tone=tone),
-              f'<line x1="{x}" y1="{top - 14}" x2="{x}" y2="{bottom}" stroke="{c["border"]}" '
-              f'stroke-width="1" stroke-dasharray="4 5"/>')
-
-    def msg(y, x1, x2, text, *, dash=False):
-        step = 8 if x2 > x1 else -8
-        return k.edge([(x1 + step, y), (x2 - step, y)], label=text, dash=dash)
-
-    def note(y, x1, x2, text, *, mono=False):
-        return k.text((x1 + x2) / 2, y + 19, text, size=11.5, anchor="middle",
-                      colour=c["chip"] if mono else c["sub"], font=MONO if mono else None)
-
-    # The block the whole tool exists for: one redeploy per computer.
-    k.add(f'<rect x="{P - 130}" y="380" width="{J - P + 260}" height="106" rx="8" fill="none" '
-          f'stroke="{c["border"]}" stroke-width="1" stroke-dasharray="5 4"/>',
-          k.text(P - 116, 398, "for each computer, unless --dry-run", size=11.5,
-                 colour=c["sub"], weight="600"))
+    W, H = 320, 124
+    xs = [24, 430, 836]
+    y1, y2 = 40, 268
+    m1, m2 = y1 + H / 2, y2 + H / 2
     k.add(
-        msg(100, O, P, "python3 -m src.main"),
-        note(100, O, P, "group, one serial or a file"),
-        msg(146, P, J, "POST /api/v1/auth/token"),
-        note(146, P, J, "skipped when an API token is set"),
-        msg(200, J, P, "bearer token", dash=True),
-        msg(246, P, J, "GET /JSSResource/computergroups/id/{id}"),
-        note(246, P, J, "or /JSSResource/computers/serialnumber/{sn}", mono=True),
-        msg(300, J, P, "computer records", dash=True),
-        msg(334, P, O, "Do you want to proceed?", dash=True),
-        msg(364, O, P, "yes"),
-        msg(430, P, J, "POST /api/v1/jamf-management-framework/redeploy/{id}"),
-        msg(466, J, P, "deviceId, commandUuid", dash=True),
-        msg(518, J, D, "MDM command via APNs"),
-        # The last step is the Mac's own, so it is a note on its lane, not a message.
-        k.box(D - 88, 540, 176, 64, "Jamf framework", ["reinstalled"], tone="soft"),
+        # Row one: sign in and read.
+        card(k, xs[0], y1, W, H, "Operator", ["Starts the CLI with a group,",
+             "one serial or a serial file", ("python3 -m src.main", True)], icon="user"),
+        card(k, xs[1], y1, W, H, "Wake-Up Call CLI", ["Signs in, then reads records",
+             ("POST /api/v1/auth/token", True), "skipped when an API token is set"],
+             icon="terminal", tone="accent"),
+        card(k, xs[2], y1, W, H, "Jamf Pro", ["Returns the computer records",
+             ("GET /JSSResource/computergroups/", True), ("id/{id} or computers/serialnumber/{sn}", True)],
+             icon="server"),
+        k.edge([(xs[0] + W + 8, m1), (xs[1] - 8, m1)]),
+        k.edge([(xs[1] + W + 8, m1 - 12), (xs[2] - 8, m1 - 12)]),
+        k.edge([(xs[2] - 8, m1 + 14), (xs[1] + W + 8, m1 + 14)], dash=True),
+        k.text(xs[1] + W + 43, m1 + 34, "records", size=11.5, font=MONO,
+               colour=c["chip"], anchor="middle"),
+        # The reply from row one comes back down the page to the confirmation.
+        k.edge([(xs[1] + W / 2, y1 + H + 8), (xs[1] + W / 2, 206),
+                (xs[0] + W / 2, 206), (xs[0] + W / 2, y2 - 8)], dash=True),
+        k.text(xs[1] + W / 2 + 12, 196, "the list to confirm", size=11.5, font=MONO,
+               colour=c["chip"]),
+        # Row two: confirm, redeploy, deliver.
+        card(k, xs[0], y2, W, H, "Operator confirms", [("Do you want to proceed?", True),
+             "yes continues, no stops", "--dry-run stops after this"], icon="user"),
+        card(k, xs[1], y2, W, H, "Redeploy, once per computer", ["Never retried if it fails",
+             ("POST /api/v1/jamf-management-", True), ("framework/redeploy/{id}", True)],
+             icon="server"),
+        card(k, xs[2], y2, W, H, "Mac", ["Gets the MDM command and", "reinstalls the Jamf framework"],
+             icon="laptop", tone="soft"),
+        k.edge([(xs[0] + W + 8, m2), (xs[1] - 8, m2)], label="yes"),
+        k.edge([(xs[1] + W + 8, m2), (xs[2] - 8, m2)], label="APNs"),
         k.footer("Superseded by the wakeup module in Jamf-Snipe-IT-Suite. Reads are retried "
                  "on 429 and 5xx; a redeploy is sent once, never retried."),
     )
